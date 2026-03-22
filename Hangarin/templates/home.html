@@ -1,0 +1,226 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dashboard - Hangarin{% endblock %}
+
+{% block content %}
+
+<div class="row mb-4">
+    <div class="col-12">
+        <h4 class="text-secondary mb-0">
+            <i class="fas fa-home me-2"></i> Dashboard
+        </h4>
+    </div>
+</div>
+
+<!-- Stats Cards -->
+<div class="row g-4">
+
+    <!-- Total Tasks -->
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="icon bg-primary-soft text-primary">
+                <i class="fas fa-tasks"></i>
+            </div>
+            <div>
+                <p class="label">Total Tasks</p>
+                <h3>{{ total_tasks }}</h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pending -->
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="icon bg-warning-soft text-warning">
+                <i class="fas fa-clock"></i>
+            </div>
+            <div>
+                <p class="label">Pending</p>
+                <h3>{{ pending_count }}</h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- In Progress -->
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="icon bg-info-soft text-info">
+                <i class="fas fa-spinner"></i>
+            </div>
+            <div>
+                <p class="label">In Progress</p>
+                <h3>{{ inprogress_count }}</h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- Completed -->
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="icon bg-success-soft text-success">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <div>
+                <p class="label">Completed</p>
+                <h3>{{ completed_count }}</h3>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Secondary Stats -->
+<div class="row g-4 mt-1">
+
+    <div class="col-md-4">
+        <div class="mini-card">
+            <i class="fas fa-folder text-primary"></i>
+            <div>
+                <p>Categories</p>
+                <h4>{{ total_categories }}</h4>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="mini-card">
+            <i class="fas fa-star text-warning"></i>
+            <div>
+                <p>Priorities</p>
+                <h4>{{ total_priorities }}</h4>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="mini-card">
+            <i class="fas fa-sticky-note text-info"></i>
+            <div>
+                <p>Notes</p>
+                <h4>{{ total_notes }}</h4>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Recent Tasks (Card Style instead of Table) -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card shadow-sm rounded-4 border-0">
+            <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
+                <h5 class="fw-bold mb-0">Recent Tasks</h5>
+                <a href="{% url 'task-list' %}" class="btn btn-sm btn-primary rounded-3">
+                    View All
+                </a>
+            </div>
+
+            <div class="card-body">
+
+                <div class="row g-3">
+                    {% for task in recent_tasks %}
+                    <div class="col-md-4">
+                        <div class="task-mini-card">
+
+                            <h6 class="fw-bold mb-1">{{ task.title }}</h6>
+
+                            <p class="small text-muted mb-2">
+                                <i class="fas fa-calendar me-1"></i>
+                                {{ task.deadline|date:"M d, Y" }}
+                            </p>
+
+                            {% if task.status == 'Completed' %}
+                                <span class="badge bg-success-subtle text-success">{{ task.status }}</span>
+                            {% elif task.status == 'In Progress' %}
+                                <span class="badge bg-info-subtle text-info">{{ task.status }}</span>
+                            {% else %}
+                                <span class="badge bg-warning-subtle text-warning">{{ task.status }}</span>
+                            {% endif %}
+
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="col-12 text-center text-muted py-4">
+                        No tasks yet
+                    </div>
+                    {% endfor %}
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Styles -->
+<style>
+    .stat-card {
+        background: #fff;
+        border-radius: 15px;
+        padding: 18px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        transition: 0.25s;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+    }
+
+    .icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+    }
+
+    .label {
+        font-size: 13px;
+        color: #888;
+        margin-bottom: 2px;
+    }
+
+    .mini-card {
+        background: #fff;
+        border-radius: 12px;
+        padding: 15px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+        transition: 0.2s;
+    }
+
+    .mini-card:hover {
+        transform: translateY(-3px);
+    }
+
+    .task-mini-card {
+        background: #f8f9fc;
+        border-radius: 12px;
+        padding: 12px;
+        transition: 0.2s;
+    }
+
+    .task-mini-card:hover {
+        background: #eef1ff;
+        transform: scale(1.02);
+    }
+
+    .bg-primary-soft { background: #eef1ff; }
+    .bg-warning-soft { background: #fff4e5; }
+    .bg-info-soft { background: #e7f1ff; }
+    .bg-success-soft { background: #e6f4ea; }
+
+    .badge.bg-success-subtle { background: #e6f4ea; }
+    .badge.bg-warning-subtle { background: #fff4e5; }
+    .badge.bg-info-subtle { background: #e7f1ff; }
+</style>
+
+{% endblock %}

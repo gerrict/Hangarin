@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Notes - Hangarin{% endblock %}
+
+{% block content %}
+
+<div class="row mb-4">
+    <div class="col-12 d-flex justify-content-between align-items-center">
+        <h4 class="text-secondary mb-0">
+            <i class="fas fa-sticky-note me-2"></i> Notes
+        </h4>
+        <a href="{% url 'note-add' %}" class="btn btn-success rounded-3 shadow-sm">
+            <i class="fas fa-plus me-1"></i> Add Note
+        </a>
+    </div>
+</div>
+
+<!-- Notes Grid -->
+<div class="row g-4">
+
+    {% for note in object_list %}
+    <div class="col-md-4 col-lg-3">
+        <div class="note-card h-100">
+
+            <!-- Header -->
+            <div class="d-flex justify-content-between align-items-start mb-2">
+                <span class="badge bg-light text-dark small">
+                    {{ note.task.title }}
+                </span>
+
+                <div>
+                    <a href="{% url 'note-update' note.id %}" class="icon-btn">
+                        <i class="fas fa-pen"></i>
+                    </a>
+                    <a href="{% url 'note-delete' note.id %}" class="icon-btn text-danger">
+                        <i class="fas fa-trash"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Content -->
+            <p class="note-content">
+                {{ note.content|truncatewords:20 }}
+            </p>
+
+            <!-- Footer -->
+            <div class="mt-auto">
+                <small class="text-muted">
+                    <i class="fas fa-calendar me-1"></i>
+                    {{ note.created_at|date:"M d, Y" }}
+                </small>
+            </div>
+
+        </div>
+    </div>
+
+    {% empty %}
+    <div class="col-12 text-center py-5">
+        <i class="fas fa-sticky-note fa-2x text-muted mb-2"></i>
+        <p class="text-muted mb-0">No notes found</p>
+        <small class="text-muted">Start by adding a note</small>
+    </div>
+    {% endfor %}
+
+</div>
+
+<!-- Pagination -->
+<div class="mt-4">
+    {% include 'includes/pagination.html' %}
+</div>
+
+<!-- Styles -->
+<style>
+    .note-card {
+        background: #fffbea;
+        border-radius: 15px;
+        padding: 18px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        transition: all 0.25s ease;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .note-card:hover {
+        transform: translateY(-5px) rotate(-1deg);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+    }
+
+    .note-content {
+        font-size: 14px;
+        color: #333;
+        margin-bottom: 15px;
+        line-height: 1.4;
+    }
+
+    .icon-btn {
+        padding: 6px 8px;
+        border-radius: 8px;
+        background: #f1f3f5;
+        color: #333;
+        margin-left: 5px;
+        transition: 0.2s;
+    }
+
+    .icon-btn:hover {
+        background: #e2e6ea;
+    }
+</style>
+
+{% endblock %}
